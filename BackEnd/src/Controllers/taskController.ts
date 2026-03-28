@@ -24,15 +24,15 @@ export const createTask = async (req: Request, res: Response) => {
             });
         }
 
-        if (title.trim().length > 10) {
+        if (title.trim().length > 50) {
             return res.status(400).json({
-                message: "O título deve ter no máximo 10 caracteres",
+                message: "O título deve ter no máximo 50 caracteres",
             });
         }
 
-        if (description.trim().length > 30) {
+        if (description.trim().length > 100) {
             return res.status(400).json({
-                message: "A descrição deve ter no máximo 30 caracteres",
+                message: "A descrição deve ter no máximo 100 caracteres",
             });
         }
 
@@ -126,15 +126,15 @@ export const updateTask = async (req: Request, res: Response) => {
             });
         }
 
-        if (title.trim().length > 10) {
+        if (title.trim().length > 50) {
             return res.status(400).json({
-                message: "O título deve ter no máximo 10 caracteres",
+                message: "O título deve ter no máximo 50 caracteres",
             });
         }
 
-        if (description.trim().length > 30) {
+        if (description.trim().length > 100) {
             return res.status(400).json({
-                message: "A descrição deve ter no máximo 30 caracteres",
+                message: "A descrição deve ter no máximo 100 caracteres",
             });
         }
 
