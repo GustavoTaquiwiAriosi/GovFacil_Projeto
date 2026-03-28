@@ -47,10 +47,9 @@ Foram implementadas validações tanto no frontend quanto no backend:
 ---
 
 ## 📁 Estrutura do projeto
-
-
 GovFacil/
 ├── BackEnd/
+
 └── FrontEnd/
 
 
@@ -69,17 +68,18 @@ Crie um arquivo `.env` dentro da pasta `BackEnd` com:
 
 
 DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=SUA_SENHA
-DB_DATABASE=govfacil_task
 
+DB_PORT=5432
+
+DB_USERNAME=postgres
+
+DB_PASSWORD=SUA_SENHA
+
+DB_DATABASE=govfacil_task
 
 Depois execute:
 
-
 npm run dev
-
 
 O backend estará disponível em:  
 http://localhost:3000
