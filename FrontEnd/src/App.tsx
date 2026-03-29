@@ -1,14 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { FaFilter, } from "react-icons/fa";
-import { FaFilterCircleXmark, FaClock } from "react-icons/fa6";
-import { IoIosClose } from "react-icons/io";
-import { VscVerifiedFilled } from "react-icons/vsc";
-import { FiLoader } from "react-icons/fi";
 import { api } from "./services/api";
 import "./App.css";
-import { TaskColumn } from "./components/TaskColumn";
-import { Button } from "./components/Button";
-import Swal from "sweetalert2";
 
 type Task = {
   id: number;
@@ -142,44 +134,16 @@ function App() {
   }
 
   async function handleDeleteTask(id: number) {
-    const result = await Swal.fire({
-      title: "Confirmar exclusão?",
-      text: "Essa ação não poderá ser desfeita!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Excluir",
-      cancelButtonText: "Cancelar",
-      draggable: true,
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await api.delete(`/tasks/${id}`);
-
-        await Swal.fire({
-          title: "Excluído!",
-          text: "A tarefa foi removida com sucesso.",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-
-        fetchTasks({
-          status: filterStatus,
-          startDate: filterStartDate,
-          endDate: filterEndDate,
-        });
-      } catch (error) {
-        console.error("Erro ao deletar tarefa:", error);
-
-        Swal.fire({
-          title: "Erro",
-          text: "Não foi possível excluir a tarefa.",
-          icon: "error",
-        });
-      }
+    try {
+      await api.delete(`/tasks/${id}`);
+      fetchTasks({
+        status: filterStatus,
+        startDate: filterStartDate,
+        endDate: filterEndDate,
+      });
+    } catch (error) {
+      console.error("Erro ao deletar tarefa:", error);
+      setError("Erro ao deletar tarefa.");
     }
   }
 
@@ -226,18 +190,7 @@ function App() {
           <p>Gerencie suas tarefas facilmente</p>
         </header>
 
-        {error && (
-          <div className="alert-error">
-            <span>{error}</span>
-
-            <button
-              className="alert-close"
-              onClick={() => setError("")}
-            >
-              <IoIosClose size={28} />
-            </button>
-          </div>
-        )}
+        {error && <div className="alert-error">{error}</div>}
 
         <section className="top-grid">
           <div className="glass-card">
@@ -299,22 +252,18 @@ function App() {
               </div>
 
               <div className="actions">
-                <Button type="submit" variant="primary">
-                  {editingTaskId ? (
-                    <>
-                      <VscVerifiedFilled /> Atualizar
-                    </>
-                  ) : (
-                    <>
-                      <VscVerifiedFilled /> Criar
-                    </>
-                  )}
-                </Button>
+                <button className="btn btn-primary" type="submit">
+                  {editingTaskId ? "✓ Atualizar" : "✓ Criar"}
+                </button>
 
                 {editingTaskId && (
-                  <Button variant="secondary" onClick={resetForm}>
+                  <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={resetForm}
+                  >
                     Cancelar
-                  </Button>
+                  </button>
                 )}
               </div>
             </form>
@@ -353,13 +302,21 @@ function App() {
               <div className="field-label">Data de fim</div>
 
               <div className="actions">
-                <Button variant="filter" onClick={handleApplyFilters}>
-                  <FaFilter /> Filtrar
-                </Button>
+                <button
+                  className="btn btn-filter"
+                  type="button"
+                  onClick={handleApplyFilters}
+                >
+                  ⏳ Filtrar
+                </button>
 
-                <Button variant="danger-soft" onClick={handleClearFilters}>
-                  <FaFilterCircleXmark /> Limpar filtros
-                </Button>
+                <button
+                  className="btn btn-danger-soft"
+                  type="button"
+                  onClick={handleClearFilters}
+                >
+                  Limpar filtros
+                </button>
               </div>
             </div>
           </div>
@@ -369,36 +326,113 @@ function App() {
           <h2 className="tasks-title">Lista de tarefas</h2>
 
           <div className="task-columns">
-            <TaskColumn
-              title="Pendente"
-              icon={<FaClock />}
-              headerClass="pending"
-              tasks={groupedTasks.pendente}
-              formatDate={formatDate}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
-            />
+            <div className="status-column">
+              <div className="status-header pending">
+                <span>▣</span>
+                <span>Pendente</span>
+              </div>
 
-            <TaskColumn
-              title="Em andamento"
-              icon={<FiLoader />}
-              headerClass="progress"
-              tasks={groupedTasks.andamento}
-              formatDate={formatDate}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
-            />
+              {groupedTasks.pendente.length === 0 ? (
+                <div className="empty-card">Sem tarefas</div>
+              ) : (
+                groupedTasks.pendente.map((task) => (
+                  <div className="task-card" key={task.id}>
+                    <h3>{task.title}</h3>
+                    <p>{task.description}</p>
+                    <div className="task-date">
+                      📅 {formatDate(task.startDate)} - {formatDate(task.endDate)}
+                    </div>
+                    <div className="task-buttons">
+                      <button
+                        className="btn btn-edit"
+                        onClick={() => handleEditTask(task)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn btn-delete"
+                        onClick={() => handleDeleteTask(task.id)}
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
 
-            <TaskColumn
-              title="Concluída"
-              icon={<VscVerifiedFilled />}
-              headerClass="done"
-              tasks={groupedTasks.concluida}
-              formatDate={formatDate}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
-              showDoneBadge
-            />
+            <div className="status-column">
+              <div className="status-header progress">
+                <span>☑</span>
+                <span>Em andamento</span>
+              </div>
+
+              {groupedTasks.andamento.length === 0 ? (
+                <div className="empty-card">Sem tarefas</div>
+              ) : (
+                groupedTasks.andamento.map((task) => (
+                  <div className="task-card" key={task.id}>
+                    <h3>{task.title}</h3>
+                    <p>{task.description}</p>
+                    <div className="task-date">
+                      📅 {formatDate(task.startDate)} - {formatDate(task.endDate)}
+                    </div>
+                    <div className="task-buttons">
+                      <button
+                        className="btn btn-edit"
+                        onClick={() => handleEditTask(task)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn btn-delete"
+                        onClick={() => handleDeleteTask(task.id)}
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="status-column">
+              <div className="status-header done">
+                <span>✔</span>
+                <span>Concluída</span>
+              </div>
+
+              {groupedTasks.concluida.length === 0 ? (
+                <div className="empty-card">Sem tarefas</div>
+              ) : (
+                groupedTasks.concluida.map((task) => (
+                  <div className="task-card" key={task.id}>
+                    <div className="task-top">
+                      <h3>{task.title}</h3>
+                      <span className="done-badge">Concluída</span>
+                    </div>
+                    <p>{task.description}</p>
+                    <div className="task-date">
+                      📅 {formatDate(task.startDate)} - {formatDate(task.endDate)}
+                    </div>
+                    <div className="task-buttons">
+                      <button
+                        className="btn btn-edit"
+                        onClick={() => handleEditTask(task)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn btn-delete"
+                        onClick={() => handleDeleteTask(task.id)}
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </section>
       </main>
