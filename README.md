@@ -47,64 +47,85 @@ Foram implementadas validações tanto no frontend quanto no backend:
 ---
 
 ## 📁 Estrutura do projeto
-
-```bash
+```
 GovFacil/
 ├── BackEnd/
-└── FrontEnd/
+├── FrontEnd/
+└── docker-compose.yml
 ```
-🔹 Backend
-```bash
+---
+
+## ▶️ Como rodar o projeto
+
+### 🔹 Usando Docker (recomendado)
+
+Com Docker instalado, execute:
+
+```docker compose up --build```
+
+Isso irá subir automaticamente:
+
+- Banco de dados PostgreSQL  
+- Backend (API)  
+- Frontend (interface)  
+
+Após iniciar:
+
+- Frontend: http://localhost:5173  
+- Backend: http://localhost:3000  
+
+---
+
+### 🔹 Rodar manualmente (sem Docker)
+
+#### Backend
+```
 cd BackEnd
 npm install
 ```
-Crie um arquivo .env dentro da pasta BackEnd com:
+Crie um arquivo `.env`:
 ```
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=postgres
-DB_PASSWORD=SUA_SENHA
+DB_PASSWORD=senha configurada no seu banco
 DB_DATABASE=govfacil_task
 ```
-Depois execute:
-```bash
-npm run dev
-```
+Execute:
 
-O backend estará disponível em:  
-http://localhost:3000
+```npm run dev```
 
 ---
 
-### 🔹 Frontend
-```bash
-cd FrontEnd
+#### Frontend
+
+```cd FrontEnd
 npm install
 npm run dev
 ```
+Acesse:
 
-O frontend estará disponível em:  
 http://localhost:5173
 
 ---
 
 ## 🎨 Interface
 
-O frontend foi desenvolvido com foco em usabilidade, incluindo:
+O frontend foi desenvolvido com foco em usabilidade:
 
-- Layout moderno  
-- Organização das tarefas por status  
+- Layout moderno com efeito glass  
+- Organização de tarefas por status  
 - Feedback visual de erros  
-- Contador de caracteres nos campos  
+- Contador de caracteres  
 - Interface responsiva  
 
 ---
 
 ## 📌 Observações
 
-- Para simplificar o escopo, foi utilizado um usuário fixo  
-- A aplicação possui validações no frontend e backend  
-- O projeto foi organizado separando responsabilidades (rotas, controllers, etc.)  
+- O projeto utiliza um usuário fixo para simplificação do escopo  
+- Validações foram implementadas no frontend e backend  
+- Estrutura organizada separando responsabilidades  
 
 ---
 
@@ -113,11 +134,6 @@ O frontend foi desenvolvido com foco em usabilidade, incluindo:
 - Autenticação de usuários  
 - Associação de tarefas por usuário  
 - Testes automatizados  
-- Dockerização do projeto  
-- Melhorias visuais adicionais  
+- Deploy em produção  
+- Melhorias adicionais de UI/UX  
 
----
-
-## 👨‍💻 Autor
-
-Desenvolvido por Gustavo Ariosi para o processo seletivo da GovFácil.
